@@ -105,6 +105,14 @@
     <button id="waBtn" onclick="shareWhatsApp()" disabled>שתף בוואטסאפ</button>
     <button id="favBtn" onclick="addToFavorites()" disabled>שמור למועדפים ⭐</button>
     <h2 style="margin-top:40px;">המועדפים שלי</h2>
+    <input
+      id="favSearch"
+      type="text"
+      placeholder="חפש במועדפים..."
+      oninput="renderFavorites()"
+      style="padding:10px; font-size:16px; width:320px; max-width:90%; margin-top:12px;"
+    />
+
     <div style="margin-top:10px;">
       <button onclick="clearFavorites()">נקה מועדפים</button>
       <button onclick="exportFavorites()">ייצא מועדפים לקובץ</button>
@@ -215,22 +223,38 @@
           const container = document.getElementById("favorites");
           const favs = loadFavorites();
         
+          const q = (document.getElementById("favSearch")?.value || "").trim().toLowerCase();
+        
           if (!favs.length) {
             container.innerHTML = "<p style='color:#666;'>אין מועדפים עדיין. שמור משפט שאהבת ⭐</p>";
             return;
           }
         
-          container.innerHTML = favs.map((text, i) => `
-            <div class="fav-item">
-              <div>${escapeHtml(text)}</div>
-              <div class="fav-actions">
-                <button onclick="copyFavorite(${i})">העתק</button>
-                <button onclick="shareFavorite(${i})">וואטסאפ</button>
-                <button onclick="removeFavorite(${i})">מחק</button>
+          const filtered = q
+            ? favs
+                .map((text, i) => ({ text, i }))
+                .filter(x => x.text.toLowerCase().includes(q))
+            : favs.map((text, i) => ({ text, i }));
+        
+          if (!filtered.length) {
+            container.innerHTML = "<p style='color:#666;'>לא נמצאו תוצאות.</p>";
+            return;
+          }
+        
+          container.innerHTML = filtered
+            .map(x => `
+              <div class="fav-item">
+                <div>${escapeHtml(x.text)}</div>
+                <div class="fav-actions">
+                  <button onclick="copyFavorite(${x.i})">העתק</button>
+                  <button onclick="shareFavorite(${x.i})">וואטסאפ</button>
+                  <button onclick="removeFavorite(${x.i})">מחק</button>
+                </div>
               </div>
-            </div>
-          `).join("");
+            `)
+            .join("");
         }
+
         
         function addToFavorites() {
           const text = document.getElementById("result").innerText.trim();
@@ -331,6 +355,7 @@
 
 </body>
 </html>
+
 
 
 
