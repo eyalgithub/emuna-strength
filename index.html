@@ -41,6 +41,19 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
+        #waBtn {
+          padding: 10px 22px;
+          font-size: 16px;
+          cursor: pointer;
+          margin-top: 15px;
+          margin-right: 10px;
+        }
+        
+        #waBtn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
 
     </style>
 </head>
@@ -60,6 +73,8 @@
 
     <div id="result"></div>
     <button id="copyBtn" onclick="copyText()" disabled>העתק</button>
+    <button id="waBtn" onclick="shareWhatsApp()" disabled>שתף בוואטסאפ</button>
+
     <p id="copyMsg" style="margin-top:10px;"></p>
 
 
@@ -99,6 +114,7 @@
           if (list.length === 0) {
             document.getElementById("result").innerText = "לא נמצאו משפטים בקטגוריה הזו.";
             document.getElementById("copyBtn").disabled = true;
+            document.getElementById("waBtn").disabled = true;
             return;
           }
         
@@ -107,33 +123,45 @@
         
           document.getElementById("result").innerText = text;
           document.getElementById("copyBtn").disabled = false;
+          document.getElementById("waBtn").disabled = false;
           document.getElementById("copyMsg").innerText = "";
         }
 
 
-    async function copyText() {
-        const text = document.getElementById("result").innerText.trim();
-        if (!text) return;
-
-        try {
-            await navigator.clipboard.writeText(text);
-            document.getElementById("copyMsg").innerText = "✅ הועתק ללוח!";
-        } catch (err) {
-            // fallback לדפדפנים/מצבים שחוסמים clipboard
-            const textarea = document.createElement("textarea");
-            textarea.value = text;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand("copy");
-            document.body.removeChild(textarea);
-
-            document.getElementById("copyMsg").innerText = "✅ הועתק ללוח!";
+        async function copyText() {
+            const text = document.getElementById("result").innerText.trim();
+            if (!text) return;
+    
+            try {
+                await navigator.clipboard.writeText(text);
+                document.getElementById("copyMsg").innerText = "✅ הועתק ללוח!";
+            } catch (err) {
+                // fallback לדפדפנים/מצבים שחוסמים clipboard
+                const textarea = document.createElement("textarea");
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textarea);
+    
+                document.getElementById("copyMsg").innerText = "✅ הועתק ללוח!";
+            }
         }
-    }
+        function shareWhatsApp() {
+          const text = document.getElementById("result").innerText.trim();
+          if (!text) return;
+        
+          const message = encodeURIComponent(text + "\n\nנשלח מאתר חיזוק באמונה 💙");
+          const url = "https://wa.me/?text=" + message;
+
+          window.open(url, "_blank");
+        }
+
     </script>
 
 </body>
 </html>
+
 
 
 
