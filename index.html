@@ -105,6 +105,11 @@
     <button id="waBtn" onclick="shareWhatsApp()" disabled>שתף בוואטסאפ</button>
     <button id="favBtn" onclick="addToFavorites()" disabled>שמור למועדפים ⭐</button>
     <h2 style="margin-top:40px;">המועדפים שלי</h2>
+    <div style="margin-top:10px;">
+      <button onclick="clearFavorites()">נקה מועדפים</button>
+      <button onclick="exportFavorites()">ייצא מועדפים לקובץ</button>
+    </div>
+
     <div id="favorites"></div>
 
 
@@ -291,11 +296,42 @@
         // כשהעמוד נטען – מציג מועדפים קיימים
         renderFavorites();
 
+        function clearFavorites() {
+          if (!confirm("בטוח למחוק את כל המועדפים?")) return;
+          saveFavorites([]);
+          renderFavorites();
+          document.getElementById("copyMsg").innerText = "🗑️ המועדפים נמחקו";
+        }
+        
+        function exportFavorites() {
+          const favs = loadFavorites();
+          if (!favs.length) {
+            document.getElementById("copyMsg").innerText = "אין מועדפים לייצוא.";
+            return;
+          }
+        
+          const content = favs.map((t, i) => `${i + 1}. ${t}`).join("\n\n");
+          const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+          const url = URL.createObjectURL(blob);
+        
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "emuna-favorites.txt";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        
+          URL.revokeObjectURL(url);
+          document.getElementById("copyMsg").innerText = "📄 קובץ המועדפים ירד למחשב";
+        }
+
+
 
     </script>
 
 </body>
 </html>
+
 
 
 
