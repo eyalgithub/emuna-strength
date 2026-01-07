@@ -53,6 +53,35 @@
           opacity: 0.5;
           cursor: not-allowed;
         }
+        #favBtn {
+          padding: 10px 22px;
+          font-size: 16px;
+          cursor: pointer;
+          margin-top: 15px;
+          margin-right: 10px;
+        }
+        
+        #favBtn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+        
+        .fav-item {
+          background: white;
+          padding: 12px;
+          border-radius: 8px;
+          max-width: 500px;
+          margin: 10px auto;
+          text-align: right;
+        }
+        
+        .fav-actions button {
+          margin-top: 10px;
+          margin-left: 8px;
+          padding: 6px 10px;
+          cursor: pointer;
+          font-size: 14px;
+        }
 
 
     </style>
@@ -74,6 +103,10 @@
     <div id="result"></div>
     <button id="copyBtn" onclick="copyText()" disabled>העתק</button>
     <button id="waBtn" onclick="shareWhatsApp()" disabled>שתף בוואטסאפ</button>
+    <button id="favBtn" onclick="addToFavorites()" disabled>שמור למועדפים ⭐</button>
+    <h2 style="margin-top:40px;">המועדפים שלי</h2>
+    <div id="favorites"></div>
+
 
     <p id="copyMsg" style="margin-top:10px;"></p>
 
@@ -115,6 +148,7 @@
             document.getElementById("result").innerText = "לא נמצאו משפטים בקטגוריה הזו.";
             document.getElementById("copyBtn").disabled = true;
             document.getElementById("waBtn").disabled = true;
+            document.getElementById("favBtn").disabled = true;
             return;
           }
         
@@ -124,6 +158,8 @@
           document.getElementById("result").innerText = text;
           document.getElementById("copyBtn").disabled = false;
           document.getElementById("waBtn").disabled = false;
+          document.getElementById("favBtn").disabled = false;
+
           document.getElementById("copyMsg").innerText = "";
         }
 
@@ -156,11 +192,111 @@
 
           window.open(url, "_blank");
         }
+        const STORAGE_KEY = "emuna_favorites_v1";
+
+        function loadFavorites() {
+          try {
+            return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+          } catch {
+            return [];
+          }
+        }
+        
+        function saveFavorites(list) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+        }
+        
+        function renderFavorites() {
+          const container = document.getElementById("favorites");
+          const favs = loadFavorites();
+        
+          if (!favs.length) {
+            container.innerHTML = "<p style='color:#666;'>אין מועדפים עדיין. שמור משפט שאהבת ⭐</p>";
+            return;
+          }
+        
+          container.innerHTML = favs.map((text, i) => `
+            <div class="fav-item">
+              <div>${escapeHtml(text)}</div>
+              <div class="fav-actions">
+                <button onclick="copyFavorite(${i})">העתק</button>
+                <button onclick="shareFavorite(${i})">וואטסאפ</button>
+                <button onclick="removeFavorite(${i})">מחק</button>
+              </div>
+            </div>
+          `).join("");
+        }
+        
+        function addToFavorites() {
+          const text = document.getElementById("result").innerText.trim();
+          if (!text) return;
+        
+          const favs = loadFavorites();
+        
+          if (favs.includes(text)) {
+            document.getElementById("copyMsg").innerText = "⭐ כבר שמור במועדפים";
+            return;
+          }
+        
+          favs.unshift(text); // מוסיף לראש הרשימה
+          saveFavorites(favs);
+          renderFavorites();
+          document.getElementById("copyMsg").innerText = "⭐ נשמר במועדפים!";
+        }
+        
+        async function copyFavorite(i) {
+          const favs = loadFavorites();
+          const text = (favs[i] || "").trim();
+          if (!text) return;
+        
+          try {
+            await navigator.clipboard.writeText(text);
+            document.getElementById("copyMsg").innerText = "✅ הועתק ללוח!";
+          } catch {
+            const textarea = document.createElement("textarea");
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textarea);
+            document.getElementById("copyMsg").innerText = "✅ הועתק ללוח!";
+          }
+        }
+        
+        function shareFavorite(i) {
+          const favs = loadFavorites();
+          const text = (favs[i] || "").trim();
+          if (!text) return;
+        
+          const message = encodeURIComponent(text + "\n\nנשלח מאתר חיזוק באמונה 💙");
+          window.open("https://wa.me/?text=" + message, "_blank");
+        }
+        
+        function removeFavorite(i) {
+          const favs = loadFavorites();
+          favs.splice(i, 1);
+          saveFavorites(favs);
+          renderFavorites();
+        }
+        
+        function escapeHtml(str) {
+          return str
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+        }
+        
+        // כשהעמוד נטען – מציג מועדפים קיימים
+        renderFavorites();
+
 
     </script>
 
 </body>
 </html>
+
 
 
 
