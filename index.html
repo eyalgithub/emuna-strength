@@ -41,6 +41,9 @@
     <button onclick="generate()">תן לי חיזוק</button>
 
     <div id="result"></div>
+    <button id="copyBtn" onclick="copyText()" disabled>העתק</button>
+    <p id="copyMsg" style="margin-top:10px;"></p>
+
 
     <script>
         const messages = [
@@ -55,10 +58,39 @@
         ];
 
         function generate() {
-            const random = Math.floor(Math.random() * messages.length);
-            document.getElementById("result").innerText = messages[random];
+        const random = Math.floor(Math.random() * messages.length);
+        const text = messages[random];
+
+        document.getElementById("result").innerText = text;
+
+        // מאפשר כפתור העתקה אחרי שיש טקסט
+        document.getElementById("copyBtn").disabled = false;
+
+        // מנקה הודעת "הועתק" קודמת
+        document.getElementById("copyMsg").innerText = "";
+    }
+
+    async function copyText() {
+        const text = document.getElementById("result").innerText.trim();
+        if (!text) return;
+
+        try {
+            await navigator.clipboard.writeText(text);
+            document.getElementById("copyMsg").innerText = "✅ הועתק ללוח!";
+        } catch (err) {
+            // fallback לדפדפנים/מצבים שחוסמים clipboard
+            const textarea = document.createElement("textarea");
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textarea);
+
+            document.getElementById("copyMsg").innerText = "✅ הועתק ללוח!";
         }
+    }
     </script>
 
 </body>
 </html>
+
