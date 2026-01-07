@@ -105,13 +105,24 @@
     <button id="waBtn" onclick="shareWhatsApp()" disabled>שתף בוואטסאפ</button>
     <button id="favBtn" onclick="addToFavorites()" disabled>שמור למועדפים ⭐</button>
     <h2 style="margin-top:40px;">המועדפים שלי</h2>
-    <input
-      id="favSearch"
-      type="text"
-      placeholder="חפש במועדפים..."
-      oninput="renderFavorites()"
-      style="padding:10px; font-size:16px; width:320px; max-width:90%; margin-top:12px;"
-    />
+    <div style="margin-top:12px;">
+      <input
+        id="favSearch"
+        type="text"
+        placeholder="חפש במועדפים..."
+        oninput="renderFavorites()"
+        style="padding:10px; font-size:16px; width:260px; max-width:80%;"
+      />
+      <button
+        id="clearSearchBtn"
+        onclick="clearFavSearch()"
+        style="padding:10px 14px; font-size:16px; cursor:pointer;"
+        title="נקה חיפוש"
+      >
+        ✖️
+      </button>
+    </div>
+
 
     <div style="margin-top:10px;">
       <button onclick="clearFavorites()">נקה מועדפים</button>
@@ -349,12 +360,20 @@
           document.getElementById("copyMsg").innerText = "📄 קובץ המועדפים ירד למחשב";
         }
 
+        function clearFavSearch() {
+          const input = document.getElementById("favSearch");
+          if (!input) return;
+        
+          input.value = "";
+          renderFavorites();
+        }
 
 
     </script>
 
 </body>
 </html>
+
 
 
 
