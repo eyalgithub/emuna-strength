@@ -281,7 +281,7 @@ const messagesByCategory = {
           if (!text) return;
         
           const siteName = "אתר אור-פנימי (InnerLight)";
-          const siteUrl = "https://USERNAME.github.io/emuna-strength";
+          const siteUrl = "https://eyalgithub.github.io/emuna-strength";
         
           const message = encodeURIComponent(
             text +
@@ -444,6 +444,7 @@ const messagesByCategory = {
           input.value = "";
           renderFavorites();
         }
+
 
 
 
