@@ -280,11 +280,19 @@ const messagesByCategory = {
           const text = document.getElementById("result").innerText.trim();
           if (!text) return;
         
-          const message = encodeURIComponent(text + "\n\nנשלח מאתר חיזוק באמונה 💙");
+          const siteName = "אתר אור-פנימי (InnerLight)";
+          const siteUrl = "https://USERNAME.github.io/emuna-strength";
+        
+          const message = encodeURIComponent(
+            text +
+            "\n\n— " + siteName +
+            "\n" + siteUrl
+          );
+        
           const url = "https://wa.me/?text=" + message;
-
           window.open(url, "_blank");
         }
+
         const STORAGE_KEY = "emuna_favorites_v1";
 
         function loadFavorites() {
@@ -436,6 +444,7 @@ const messagesByCategory = {
           input.value = "";
           renderFavorites();
         }
+
 
 
 
