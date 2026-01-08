@@ -242,6 +242,7 @@ const messagesByCategory = {
             document.getElementById("copyBtn").disabled = true;
             document.getElementById("waBtn").disabled = true;
             document.getElementById("favBtn").disabled = true;
+            document.getElementById("shareBtn").disabled = true;
             return;
           }
         
@@ -252,6 +253,7 @@ const messagesByCategory = {
           document.getElementById("copyBtn").disabled = false;
           document.getElementById("waBtn").disabled = false;
           document.getElementById("favBtn").disabled = false;
+          document.getElementById("shareBtn").disabled = false;
 
           document.getElementById("copyMsg").innerText = "";
         }
@@ -445,6 +447,30 @@ const messagesByCategory = {
           renderFavorites();
         }
 
+        async function shareNative() {
+          const text = document.getElementById("result").innerText.trim();
+          if (!text) return;
+        
+          const siteName = "אתר אור-פנימי (InnerLight)";
+          const siteUrl = "https://eyalgithub.github.io/emuna-strength";
+        
+          const fullText = `${text}\n\n— ${siteName}\n${siteUrl}`;
+        
+          if (navigator.share) {
+            try {
+              await navigator.share({
+                text: fullText
+              });
+            } catch (e) {
+              // המשתמש ביטל שיתוף – לא לעשות כלום
+            }
+          } else {
+            // fallback: מעתיק ללוח אם אין share
+            await navigator.clipboard.writeText(fullText);
+            document.getElementById("copyMsg").innerText = "✅ הועתק לשיתוף";
+          }
+        }
+        
 
 
 
