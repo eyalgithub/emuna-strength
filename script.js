@@ -232,8 +232,126 @@ const messagesByCategory = {
           ]
         };
 
+        // ===== Rate Limit: 10 generates then 2-min cooldown =====
+        const LIMIT_MAX = 10;
+        const WINDOW_MS = 2 * 60 * 1000;      // חלון של 2 דקות
+        const COOLDOWN_MS = 2 * 60 * 1000;    // נעילה של 2 דקות
+        
+        const LIMIT_COUNT_KEY = "innerlight_gen_count_v1";
+        const LIMIT_WINDOW_START_KEY = "innerlight_gen_window_start_v1";
+        const LIMIT_COOLDOWN_UNTIL_KEY = "innerlight_gen_cooldown_until_v1";
+        
+        let cooldownTimerId = null;
+        
+        function nowMs() {
+          return Date.now();
+        }
+        
+        function loadNum(key, fallback = 0) {
+          const v = Number(localStorage.getItem(key));
+          return Number.isFinite(v) ? v : fallback;
+        }
+        
+        function saveNum(key, value) {
+          localStorage.setItem(key, String(value));
+        }
+        
+        function setLimitMessage(msg) {
+          const el = document.getElementById("limitMsg");
+          if (el) el.innerText = msg || "";
+        }
+        
+        function formatTime(ms) {
+          const totalSec = Math.max(0, Math.ceil(ms / 1000));
+          const m = Math.floor(totalSec / 60);
+          const s = totalSec % 60;
+          return `${m}:${String(s).padStart(2, "0")}`;
+        }
+        
+        function getGenerateButton() {
+          // כפתור הג'נרייט שלך מוגדר onclick="generate()"
+          return document.querySelector('button[onclick="generate()"]');
+        }
+        
+        function startCooldownUI() {
+          if (cooldownTimerId) clearInterval(cooldownTimerId);
+        
+          const btn = getGenerateButton();
+          if (btn) btn.disabled = true;
+        
+          cooldownTimerId = setInterval(() => {
+            const until = loadNum(LIMIT_COOLDOWN_UNTIL_KEY, 0);
+            const remaining = until - nowMs();
+        
+            if (remaining <= 0) {
+              clearInterval(cooldownTimerId);
+              cooldownTimerId = null;
+        
+              // סיום נעילה
+              saveNum(LIMIT_COOLDOWN_UNTIL_KEY, 0);
+              setLimitMessage("");
+              if (btn) btn.disabled = false;
+        
+              // פותחים חלון חדש
+              saveNum(LIMIT_COUNT_KEY, 0);
+              saveNum(LIMIT_WINDOW_START_KEY, nowMs());
+              return;
+            }
+        
+            setLimitMessage(`הגעת ל־${LIMIT_MAX} חיזוקים. נסה שוב בעוד ${formatTime(remaining)} ⏳`);
+          }, 250);
+        }
+        
+        function isInCooldown() {
+          const until = loadNum(LIMIT_COOLDOWN_UNTIL_KEY, 0);
+          return nowMs() < until;
+        }
+        
+        function ensureWindow() {
+          const start = loadNum(LIMIT_WINDOW_START_KEY, 0);
+          const t = nowMs();
+        
+          if (!start || t - start >= WINDOW_MS) {
+            // חלון חדש
+            saveNum(LIMIT_WINDOW_START_KEY, t);
+            saveNum(LIMIT_COUNT_KEY, 0);
+            setLimitMessage("");
+          }
+        }
+        
+        function checkLimitBeforeGenerate() {
+          // אם כבר בנעילה – הצג שעון
+          if (isInCooldown()) {
+            startCooldownUI();
+            return false;
+          }
+        
+          ensureWindow();
+        
+          const count = loadNum(LIMIT_COUNT_KEY, 0);
+          if (count >= LIMIT_MAX) {
+            // הפעל נעילה ל-2 דקות
+            saveNum(LIMIT_COOLDOWN_UNTIL_KEY, nowMs() + COOLDOWN_MS);
+            startCooldownUI();
+            return false;
+          }
+        
+          return true;
+        }
+        
+        function incrementGenerateCount() {
+          const count = loadNum(LIMIT_COUNT_KEY, 0) + 1;
+          saveNum(LIMIT_COUNT_KEY, count);
+        
+          // אופציונלי: הצג כמה נשאר (אם אתה לא רוצה — תמחק את 2 השורות הבאות)
+          const remaining = LIMIT_MAX - count;
+          if (remaining > 0) setLimitMessage(`נשארו עוד ${remaining} חיזוקים לפני השהייה.`);
+          if (remaining === 0) setLimitMessage(`הגעת ל־${LIMIT_MAX}. לחיצה הבאה תפעיל השהייה.`);
+        }
+
 
         function generate() {
+          if (!checkLimitBeforeGenerate()) return;
           const category = document.getElementById("category").value;
           const list = messagesByCategory[category] || [];
         
@@ -256,6 +374,8 @@ const messagesByCategory = {
           document.getElementById("shareBtn").disabled = false;
 
           document.getElementById("copyMsg").innerText = "";
+
+          incrementGenerateCount();
         }
 
 
@@ -470,7 +590,11 @@ const messagesByCategory = {
             document.getElementById("copyMsg").innerText = "✅ הועתק לשיתוף";
           }
         }
-        
+
+        // אם המשתמש נכנס כשהוא כבר בנעילה – להמשיך את השעון
+        if (isInCooldown()) startCooldownUI();
+
+
 
 
 
