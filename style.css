@@ -170,12 +170,22 @@ footer {
     padding: 12px 12px;
   }
 
-  /* הכפתור ✖️ ליד החיפוש – שיהיה נוח */
+  /* הכפתור נקה-חיפוש ליד החיפוש – שיהיה נוח */
   #clearSearchBtn {
-    width: auto;
-    padding: 12px 14px;
-    margin-top: 10px;
+  background: #64748b; /* אפור-כחול רגוע */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 15px;
+  cursor: pointer;
+  margin-right: 8px;
   }
+    
+  #clearSearchBtn:hover {
+      background: #475569;
+  }
+
 
   .fav-item {
     padding: 14px;
@@ -188,5 +198,6 @@ footer {
     margin-left: 6px;
   }
 }
+
 
 
