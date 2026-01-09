@@ -126,8 +126,25 @@ footer {
   font-size: 14px;
   color: #6b7280;
 }
+/* עיצוב כללי */
+#feedbackBtn {
+  background: #e5e7eb;
+  color: #1f2933;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+}
 
-/* רספונסיבי */
+#feedbackBtn:hover {
+  background: #d1d5db;
+}
+
+
+
+/*  רספונסיבי התאמות לנייד – רק אם תרצה */
+
 @media (max-width: 600px) {
   h1 {
     font-size: 24px;
@@ -198,6 +215,9 @@ footer {
     margin-left: 6px;
   }
 }
+
+
+
 
 
 
