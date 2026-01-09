@@ -343,11 +343,41 @@ const messagesByCategory = {
           const count = loadNum(LIMIT_COUNT_KEY, 0) + 1;
           saveNum(LIMIT_COUNT_KEY, count);
         
-          // אופציונלי: הצג כמה נשאר (אם אתה לא רוצה — תמחק את 2 השורות הבאות)
           const remaining = LIMIT_MAX - count;
-          if (remaining > 0) setLimitMessage(`נשארו עוד ${remaining} חיזוקים לפני השהייה.`);
-          if (remaining === 0) setLimitMessage(`הגעת ל־${LIMIT_MAX}. לחיצה הבאה תפעיל השהייה.`);
+        
+          if (remaining > 0) {
+            setLimitMessage(`נשארו עוד ${remaining} חיזוקים לפני השהייה.`);
+            return;
+          }
+        
+          // אם הגענו בדיוק ל-10 → נכנסים מיד להשהייה
+          saveNum(LIMIT_COOLDOWN_UNTIL_KEY, nowMs() + COOLDOWN_MS);
+          startCooldownUI();
         }
+
+        function updateLimitStatusUI() {
+          // אם יש נעילה פעילה – השעון כבר מטפל בזה
+          if (isInCooldown()) {
+            startCooldownUI();
+            return;
+          }
+        
+          ensureWindow();
+        
+          const count = loadNum(LIMIT_COUNT_KEY, 0);
+          const remaining = Math.max(0, LIMIT_MAX - count);
+        
+          if (remaining === 0) {
+            // מצב נדיר (למשל אם הספירה נשמרה על 10 בלי נעילה) – ננעל
+            saveNum(LIMIT_COOLDOWN_UNTIL_KEY, nowMs() + COOLDOWN_MS);
+            startCooldownUI();
+            return;
+          }
+        
+          // מציג כמה נשאר כבר בטעינה
+          setLimitMessage(`נשארו עוד ${remaining} חיזוקים לפני השהייה.`);
+        }
+
 
 
         function generate() {
@@ -592,7 +622,8 @@ const messagesByCategory = {
         }
 
         // אם המשתמש נכנס כשהוא כבר בנעילה – להמשיך את השעון
-        if (isInCooldown()) startCooldownUI();
+        updateLimitStatusUI();
+
 
 
 
