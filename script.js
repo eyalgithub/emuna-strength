@@ -620,23 +620,12 @@ const messagesByCategory = {
             document.getElementById("copyMsg").innerText = "✅ הועתק לשיתוף";
           }
         }
-        function sendFeedback() {
-          const to = "sifreikodeshreviews@gmail.com"; // ← לשנות למייל שלך
-          const subject = encodeURIComponent("משוב על InnerLight");
-          const body = encodeURIComponent(
-            "שלום,\n\nרציתי לשתף משוב על האתר InnerLight:\n\n" +
-            "- מה אהבתי:\n" +
-            "- מה פחות עבד:\n" +
-            "- רעיון לשיפור:\n\n" +
-            "תודה!"
-          );
         
-          window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
-        }
 
 
         // אם המשתמש נכנס כשהוא כבר בנעילה – להמשיך את השעון
         updateLimitStatusUI();
+
 
 
 
