@@ -157,6 +157,23 @@ footer {
       background: #475569;
   }
 
+
+    .back-link {
+      display: inline-block;
+      padding: 10px 18px;
+      background: #e5e7eb;
+      color: #1f2933;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 15px;
+      transition: background 0.2s ease;
+    }
+    
+    .back-link:hover {
+      background: #d1d5db;
+    }
+
+
 /*  רספונסיבי התאמות לנייד – רק אם תרצה */
 
         @media (max-width: 600px) {
@@ -213,6 +230,7 @@ footer {
               }
             /*להדביק כאן רק מה שקשור לטלפון*/
         }
+
 
 
 
