@@ -578,7 +578,12 @@ const messagesByCategory = {
             return;
           }
         
-          const content = favs.map((t, i) => `${i + 1}. ${t}`).join("\n\n");
+          const RTL = "\u202B";
+
+          const content = favs
+            .map((t, i) => `${RTL}${i + 1}. ${t}`)
+            .join("\n\n");
+
         
           // ✅ BOM כדי למנוע ג׳יבריש בטלפונים/אפליקציות מסוימות
           const contentWithBom = "\uFEFF" + content;
@@ -638,6 +643,7 @@ const messagesByCategory = {
 
         // אם המשתמש נכנס כשהוא כבר בנעילה – להמשיך את השעון
         updateLimitStatusUI();
+
 
 
 
