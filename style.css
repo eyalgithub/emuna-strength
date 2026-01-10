@@ -141,53 +141,7 @@ footer {
   background: #d1d5db;
 }
 
-
-
-/*  רספונסיבי התאמות לנייד – רק אם תרצה */
-
-@media (max-width: 600px) {
-  h1 {
-    font-size: 24px;
-    margin-top: 26px;
-    padding: 0 14px;
-    line-height: 1.25;
-  }
-
-  p {
-    font-size: 16px;
-    padding: 0 16px;
-    line-height: 1.6;
-  }
-
-  .main {
-    margin: 16px 12px;
-    padding: 18px 14px;
-    border-radius: 14px;
-  }
-
-  #result {
-    font-size: 19px;
-    padding: 18px 14px;
-    margin: 18px auto 12px;
-  }
-
-  button {
-    width: 100%;
-    font-size: 17px;
-    padding: 14px 16px;
-    border-radius: 12px;
-    margin-top: 10px;
-  }
-
-  /* אם יש שדה חיפוש/תפריט */
-  select,
-  input[type="text"] {
-    width: 100%;
-    font-size: 17px;
-    padding: 12px 12px;
-  }
-
-  /* הכפתור נקה-חיפוש ליד החיפוש – שיהיה נוח */
+/* הכפתור נקה-חיפוש ליד החיפוש – שיהיה נוח */
   #clearSearchBtn {
   background: #64748b; /* אפור-כחול רגוע */
   color: white;
@@ -203,18 +157,63 @@ footer {
       background: #475569;
   }
 
+/*  רספונסיבי התאמות לנייד – רק אם תרצה */
 
-  .fav-item {
-    padding: 14px;
-  }
+        @media (max-width: 600px) {
+              h1 {
+                font-size: 24px;
+                margin-top: 26px;
+                padding: 0 14px;
+                line-height: 1.25;
+              }
+            
+              p {
+                font-size: 16px;
+                padding: 0 16px;
+                line-height: 1.6;
+              }
+            
+              .main {
+                margin: 16px 12px;
+                padding: 18px 14px;
+                border-radius: 14px;
+              }
+            
+              #result {
+                font-size: 19px;
+                padding: 18px 14px;
+                margin: 18px auto 12px;
+              }
+            
+              button {
+                width: 100%;
+                font-size: 17px;
+                padding: 14px 16px;
+                border-radius: 12px;
+                margin-top: 10px;
+              }
+            
+              /* אם יש שדה חיפוש/תפריט */
+              select,
+              input[type="text"] {
+                width: 100%;
+                font-size: 17px;
+                padding: 12px 12px;
+              }
+            
+              .fav-item {
+                padding: 14px;
+              }
+            
+              .fav-actions button {
+                width: auto;
+                font-size: 14px;
+                padding: 10px 12px;
+                margin-left: 6px;
+              }
+            /*להדביק כאן רק מה שקשור לטלפון*/
+        }
 
-  .fav-actions button {
-    width: auto;
-    font-size: 14px;
-    padding: 10px 12px;
-    margin-left: 6px;
-  }
-}
 
 
 
