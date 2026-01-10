@@ -579,7 +579,11 @@ const messagesByCategory = {
           }
         
           const content = favs.map((t, i) => `${i + 1}. ${t}`).join("\n\n");
-          const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+        
+          // ✅ BOM כדי למנוע ג׳יבריש בטלפונים/אפליקציות מסוימות
+          const contentWithBom = "\uFEFF" + content;
+        
+          const blob = new Blob([contentWithBom], { type: "text/plain;charset=utf-8" });
           const url = URL.createObjectURL(blob);
         
           const a = document.createElement("a");
@@ -592,6 +596,7 @@ const messagesByCategory = {
           URL.revokeObjectURL(url);
           document.getElementById("copyMsg").innerText = "📄 קובץ המועדפים ירד למחשב";
         }
+
 
         function clearFavSearch() {
           const input = document.getElementById("favSearch");
@@ -633,6 +638,7 @@ const messagesByCategory = {
 
         // אם המשתמש נכנס כשהוא כבר בנעילה – להמשיך את השעון
         updateLimitStatusUI();
+
 
 
 
