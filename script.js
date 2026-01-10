@@ -431,7 +431,9 @@ const messagesByCategory = {
             }
         }
         function shareWhatsApp() {
-          const text = document.getElementById("result").innerText.trim();
+          const baseText = document.getElementById("result").innerText.trim();
+          const text = getTextWithEmoji(baseText);
+
           if (!text) return;
         
           const siteName = "אתר אור-פנימי (InnerLight)";
@@ -631,6 +633,7 @@ const messagesByCategory = {
 
         // אם המשתמש נכנס כשהוא כבר בנעילה – להמשיך את השעון
         updateLimitStatusUI();
+
 
 
 
