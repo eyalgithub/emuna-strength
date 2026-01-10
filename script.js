@@ -621,7 +621,7 @@ const messagesByCategory = {
           }
         }
         function sendFeedback() {
-          const to = "eyalsh89@gmail.com"; // ← לשנות למייל שלך
+          const to = "sifreikodeshreviews@gmail.com"; // ← לשנות למייל שלך
           const subject = encodeURIComponent("משוב על InnerLight");
           const body = encodeURIComponent(
             "שלום,\n\nרציתי לשתף משוב על האתר InnerLight:\n\n" +
@@ -637,6 +637,7 @@ const messagesByCategory = {
 
         // אם המשתמש נכנס כשהוא כבר בנעילה – להמשיך את השעון
         updateLimitStatusUI();
+
 
 
 
